@@ -1,18 +1,25 @@
-# Logical Tensor Networks (LTNs) for Prisoner's Dilemma Simulation
+# Logical Tensor Networks (LTNs) 
+This repository contains code that uses Logical Tensor Networks (LTNs), implemented in TensorFlow. Logical Tensor Networks represent a powerful approach to imbuing AI systems with logical reasoning and statistical learning capabilities, broadening their applicability and enhancing their interpretability.
+
+# Table of contents
+1. Logical Tensor Networks (LTNs) for Prisoner's Dilemma Simulation
+
+   
+## Logical Tensor Networks (LTNs) for Prisoner's Dilemma Simulation
 This repository contains code that simulates the Prisoner's Dilemma using Logical Tensor Networks (LTNs), implemented in TensorFlow. The Prisoner's Dilemma is a classic example in game theory where rational individuals making decisions in their self-interest may lead to a suboptimal outcome for all.
 
-# Overview
+### Overview
 The code uses LTNs to model how multiple prisoners interact and make decisions based on their unique characteristics (embeddings). Predicates such as Cooperate, Betray, and Payoff are defined within the LTN framework to simulate prisoner decisions and outcomes.
 
-# Usage
-## Constants and Grounding:
+### Usage
+#### Constants and Grounding:
 Embedding vectors are assigned to each prisoner ('a' to 'h'), representing their unique characteristics.
 ```python
 embedding_size = 5
 prisoners = {p: ltn.Constant(np.random.uniform(low=0.0, high=1.0, size=embedding_size), trainable=True) for p in 'abcdefgh'}
 ```
 
-## Predicates:
+#### Predicates:
 Cooperate, Betray, and Payoff predicates are defined using MLPs to model decision-making and outcomes based on embeddings.
 ```python
 Cooperate = ltn.Predicate.MLP([embedding_size], hidden_layer_sizes=(8, 8))
@@ -20,7 +27,7 @@ Betray = ltn.Predicate.MLP([embedding_size], hidden_layer_sizes=(8, 8))
 Payoff = ltn.Predicate.MLP([embedding_size], hidden_layer_sizes=(8, 8))
 ```
 
-## Data:
+#### Data:
 Lists cooperate, betray, payoff_high, and payoff_low define which prisoners cooperate, betray, receive high payoffs, and low payoffs, respectively.
 ```python
 cooperate = ['a', 'b', 'e', 'h']
@@ -29,7 +36,7 @@ payoff_high = ['a', 'c']
 payoff_low = ['b', 'd', 'e', 'f', 'g', 'h']
 ```
 
-## Connectives and Quantifiers:
+#### Connectives and Quantifiers:
 Logical connectives (Not, And, Or, Implies) and quantifiers (Forall, Exists) express relationships and constraints among prisoner actions and outcomes.
 ```python
 Not = ltn.Wrapper_Connective(ltn.fuzzy_ops.Not_Std())
@@ -41,7 +48,7 @@ Exists = ltn.Wrapper_Quantifier(ltn.fuzzy_ops.Aggreg_pMean(p=6), semantics="exis
 formula_aggregator = ltn.Wrapper_Formula_Aggregator(ltn.fuzzy_ops.Aggreg_pMeanError())
 ```
 
-## Theory Axioms:
+#### Theory Axioms:
 A set of axioms define logical constraints and rules governing prisoner behavior, decision-making, and payoff outcomes.
 ```python
 @tf.function
@@ -79,8 +86,8 @@ def axioms(p_exists):
     axioms.append(Forall(p, Or(Cooperate(p), Betray(p))))
 ```
 
-## Training:
+#### Training:
 The model is trained using an optimizer to minimize loss based on the satisfaction level (sat_level) of defined axioms.
 
-## Results:
+#### Results:
 Visualizations (plt_heatmap, scatter plots) show facts and predictions of prisoner behavior (cooperate/betray) and payoff outcomes.
